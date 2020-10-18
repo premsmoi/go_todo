@@ -1,23 +1,30 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"./middleware"
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
 	// create router
 	router := gin.Default()
+
+	// CORS
+	router.Use(middleware.CORSMiddleware())
+
 	//Login-router (coming soon)
 
 	//router.Group("/test")
 	//routerLogin := router.GroupRouterLongin()
 
 	//task-router
-	routerTask := router.Group("/v1")
+	routerTask := router.Group("/task")
 	{
-		routerTask.GET("/api/task", middleware.GetAllTask)
-		routerTask.POST("/api/task", middleware.CreateTask)
-		routerTask.PUT("/api/undoTask/", middleware.UndoTask)
-		routerTask.DELETE("/api/deleteTask", middleware.DeleteTask)
-		routerTask.DELETE("/api/deleteAllTask", middleware.DeleteAllTask)
+		routerTask.GET("/", middleware.GetAllTask())
+		routerTask.POST("/", middleware.CreateTask())
+		// routerTask.PUT("/undoTask/", middleware.UndoTask)
+		// routerTask.DELETE("/deleteTask", middleware.DeleteTask)
+		// routerTask.DELETE("/deleteAllTask", middleware.DeleteAllTask)
 	}
 
 	//Run the server
