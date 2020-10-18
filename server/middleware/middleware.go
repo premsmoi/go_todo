@@ -166,3 +166,23 @@ func deleteOneTask(task string) {
 
 	fmt.Println("Deleted Document", d.DeletedCount)
 }
+
+// DeleteAllTask delete all tasks route
+func DeleteAllTask() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		count := deleteAllTask()
+		json.NewEncoder(c.Writer).Encode(count)
+	}
+
+}
+
+// delete all the tasks from the DB
+func deleteAllTask() int64 {
+	d, err := collection.DeleteMany(context.Background(), bson.D{{}}, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Deleted Document", d.DeletedCount)
+	return d.DeletedCount
+}
