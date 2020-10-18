@@ -101,7 +101,6 @@ func CreateTask() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var task models.ToDoList
 		_ = json.NewDecoder(c.Request.Body).Decode(&task)
-		fmt.Println(task, c.Request.Body)
 		insertOneTask(task)
 		w := json.NewEncoder(c.Writer).Encode(task)
 		c.JSON(http.StatusOK, w)
@@ -116,5 +115,31 @@ func insertOneTask(task models.ToDoList) {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Inserted a Single Record ", insertResult.InsertedID)
+	fmt.Println("Inserted a Single Record ", insertResult.InsertedID.(primitive.ObjectID).Hex())
+}
+
+// UndoTask undo the complete task route
+func UndoTask() gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+		// params := mux.Vars(r)
+		// undoTask(params["id"])
+		undoTask(c.Param("id"))
+		json.NewEncoder(c.Writer).Encode(c.Param("id"))
+
+	}
+}
+
+//task undo method, update task's status to false
+func undoTask(task string) {
+	fmt.Println(task)
+	id, _ := primitive.ObjectIDFromHex(task)
+	filter := bson.M{"_id": id}
+	update := bson.M{"$set": bson.M{"status": false}}
+	result, err := collection.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("modified count: ", result.ModifiedCount)
 }

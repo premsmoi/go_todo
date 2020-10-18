@@ -22,7 +22,7 @@ func main() {
 	{
 		routerTask.GET("/", middleware.GetAllTask())
 		routerTask.POST("/", middleware.CreateTask())
-		// routerTask.PUT("/undoTask/", middleware.UndoTask)
+		routerTask.PUT("/:id", middleware.UndoTask())
 		// routerTask.DELETE("/deleteTask", middleware.DeleteTask)
 		// routerTask.DELETE("/deleteAllTask", middleware.DeleteAllTask)
 	}
