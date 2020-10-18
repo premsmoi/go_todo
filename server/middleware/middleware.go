@@ -143,3 +143,26 @@ func undoTask(task string) {
 
 	fmt.Println("modified count: ", result.ModifiedCount)
 }
+
+// DeleteTask delete one task route
+func DeleteTask() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		deleteOneTask(c.Param("id"))
+		json.NewEncoder(c.Writer).Encode(c.Param("id"))
+		// json.NewEncoder(w).Encode("Task not found")
+
+	}
+}
+
+// delete one task from the DB, delete by ID
+func deleteOneTask(task string) {
+	fmt.Println(task)
+	id, _ := primitive.ObjectIDFromHex(task)
+	filter := bson.M{"_id": id}
+	d, err := collection.DeleteOne(context.Background(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Deleted Document", d.DeletedCount)
+}
