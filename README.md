@@ -1,2 +1,2 @@
 # go_todo
-Todo app using go,react and mongoDB where a logged in user can access their todo list.
+Toy Todo app using Go, mongoDB where a logged in user can access their todo list.
