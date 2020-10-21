@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"Generalkhun/go-todo-server/models"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -12,8 +13,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-
-	"../models"
 )
 
 //CORSMiddleware (Cross-Origin Resource Sharing) middleware that used to handle Response Header

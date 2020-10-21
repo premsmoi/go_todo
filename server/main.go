@@ -1,7 +1,8 @@
 package main
 
 import (
-	"./middleware"
+	"Generalkhun/go-todo-server/middleware"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,10 +13,14 @@ func main() {
 	// CORS
 	router.Use(middleware.CORSMiddleware())
 
-	//Login-router (coming soon)
-
-	//router.Group("/test")
-	//routerLogin := router.GroupRouterLongin()
+	//auth-router
+	routerAuth := router.Group("/auth")
+	{
+		//routerAuth.GET("/register", middleware.Register)
+		routerAuth.POST("/signin", middleware.Signin)
+		routerAuth.GET("/welcome", middleware.Welcome)
+		routerAuth.GET("/refresh", router.Refresh)
+	}
 
 	//task-router
 	routerTask := router.Group("/task")
