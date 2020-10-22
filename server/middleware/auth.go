@@ -12,6 +12,13 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+//PreSignin is handler function for route /
+func PreSignin() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.String(http.StatusOK, "This is Todo app, please login to start using the app")
+	}
+}
+
 //Signin is Handler function for route /signin
 func Signin() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -62,6 +69,7 @@ func Signin() gin.HandlerFunc {
 			Name:    "token",
 			Value:   tokenString,
 			Expires: expirationTime,
+			Path:    "/task",
 		})
 	}
 }
@@ -117,6 +125,19 @@ func Welcome() gin.HandlerFunc {
 
 }
 
+//Logout is handler function for /logout route, used to remove token from client's cookie
+func Logout() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Set the new token as the users `token` cookie
+		http.SetCookie(c.Writer, &http.Cookie{
+			Name:    "token",
+			Value:   "",
+			Expires: time.Now().Add(5 * time.Minute),
+		})
+		c.Redirect(http.StatusPermanentRedirect, "/")
+	}
+}
+
 //Refresh is handler function for /refresh route, used to sent refresh token to client
 func Refresh() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -131,7 +152,7 @@ func Refresh() gin.HandlerFunc {
 			return
 		}
 		tknStr := cookie.Value
-		claims := models.Claims{}
+		claims := &models.Claims{}
 		tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
 			return models.JwtKey, nil
 		})
@@ -171,6 +192,7 @@ func Refresh() gin.HandlerFunc {
 			Name:    "token",
 			Value:   tokenString,
 			Expires: expirationTime,
+			Path:    "/task",
 		})
 
 	}

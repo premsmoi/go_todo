@@ -13,6 +13,8 @@ func main() {
 	// CORS
 	router.Use(middleware.CORSMiddleware())
 
+	router.GET("/", middleware.PreSignin())
+
 	//auth-router
 	routerAuth := router.Group("/auth")
 	{
@@ -20,6 +22,7 @@ func main() {
 		routerAuth.POST("/signin", middleware.Signin())
 		routerAuth.GET("/welcome", middleware.Welcome())
 		routerAuth.GET("/refresh", middleware.Refresh())
+		routerAuth.GET("/logout", middleware.Logout())
 	}
 
 	//task-router
