@@ -17,13 +17,14 @@ func main() {
 	routerAuth := router.Group("/auth")
 	{
 		//routerAuth.GET("/register", middleware.Register)
-		routerAuth.POST("/signin", middleware.Signin)
-		routerAuth.GET("/welcome", middleware.Welcome)
-		routerAuth.GET("/refresh", router.Refresh)
+		routerAuth.POST("/signin", middleware.Signin())
+		routerAuth.GET("/welcome", middleware.Welcome())
+		routerAuth.GET("/refresh", middleware.Refresh())
 	}
 
 	//task-router
 	routerTask := router.Group("/task")
+	routerTask.Use(middleware.AuthRequired())
 	{
 		routerTask.GET("/", middleware.GetAllTask())
 		routerTask.POST("/", middleware.CreateTask())

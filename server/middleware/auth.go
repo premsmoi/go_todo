@@ -35,13 +35,13 @@ func Signin() gin.HandlerFunc {
 
 		// Declare the expiration time of the token
 		// here, we have kept it as 5 minutes
-		expirationTime := time.Now().Add(5 * time.Minute)
+		expirationTime := time.Now().Add(50 * time.Minute)
 
 		// Create the JWT claims, which includes the username and expiry time
 		claims := models.Claims{
 			Username: creds.Username,
 			StandardClaims: jwt.StandardClaims{
-				// In JWT, the expiry time is expressed as unix milliseconds
+				// In JWT, the expiry time is expre	ssed as unix milliseconds
 				ExpiresAt: expirationTime.Unix(),
 			},
 		}
@@ -69,6 +69,7 @@ func Signin() gin.HandlerFunc {
 // Welcome function is a handler funciton to POST route
 func Welcome() gin.HandlerFunc {
 	return func(c *gin.Context) {
+
 		// We can obtain the session token from the requests cookies, which come with every request
 		cookie, err := c.Request.Cookie("token")
 		if err != nil {
@@ -116,7 +117,7 @@ func Welcome() gin.HandlerFunc {
 
 }
 
-//Refresh is handler function for /refresh route, used to refresh token to client
+//Refresh is handler function for /refresh route, used to sent refresh token to client
 func Refresh() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// (BEGIN) The code uptil this point is the same as the first part of the `Welcome` route
@@ -174,4 +175,59 @@ func Refresh() gin.HandlerFunc {
 
 	}
 
+}
+
+// AuthRequired is middleware function that used to specified users from a token they've got
+func AuthRequired() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// We can obtain the session token from the requests cookies, which come with every request
+
+		_, err := c.Request.Cookie("token")
+		if err != nil {
+			if err == http.ErrNoCookie {
+				// If the cookie is not set, return an unauthorized status
+				c.Writer.WriteString("No cookie!!!")
+
+				c.AbortWithError(http.StatusUnauthorized, err)
+				return
+			}
+			c.Writer.WriteString("internal server error")
+			c.AbortWithError(http.StatusInternalServerError, err)
+			return
+
+		}
+
+		// // Get the JWT string from the cookie
+		// tknStr := cookie.Value
+		//tknStr := c.Request.Header.Get("Cookie")[6:]
+		token, _ := c.Request.Cookie("token")
+		tknStr := token.Value
+
+		// Initialize a new instance of `Claims`
+		claims := &models.Claims{}
+
+		// Parse the JWT string and store the result in `claims`.
+		// Note that we are passing the key in this method as well. This method will return an error
+		// if the token is invalid (if it has expired according to the expiry time we set on sign in),
+		// or if the signature does not match
+		tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+			return models.JwtKey, nil
+		})
+		if err != nil {
+			if err == jwt.ErrSignatureInvalid {
+				c.Writer.WriteString("Signature invalid")
+				c.AbortWithError(http.StatusUnauthorized, err)
+				return
+			}
+			c.Writer.WriteString("Bad request")
+			c.AbortWithError(http.StatusBadRequest, err)
+			return
+		}
+		if !tkn.Valid {
+			c.Writer.WriteString("Token is invalid")
+			c.AbortWithError(http.StatusUnauthorized, err)
+			return
+		}
+
+	}
 }
