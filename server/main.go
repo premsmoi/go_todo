@@ -13,12 +13,14 @@ func main() {
 	// CORS
 	router.Use(middleware.CORSMiddleware())
 
+	//home-router
 	router.GET("/", middleware.PreSignin())
+	router.POST("/register", middleware.Register())
 
 	//auth-router
 	routerAuth := router.Group("/auth")
 	{
-		//routerAuth.GET("/register", middleware.Register)
+
 		routerAuth.POST("/signin", middleware.Signin())
 		routerAuth.GET("/welcome", middleware.Welcome())
 		routerAuth.GET("/refresh", middleware.Refresh())

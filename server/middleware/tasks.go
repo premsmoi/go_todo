@@ -11,8 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 //CORSMiddleware (Cross-Origin Resource Sharing) middleware that used to handle Response Header
@@ -63,35 +61,6 @@ func GetAllTask() gin.HandlerFunc {
 		c.JSON(http.StatusOK, w)
 
 	}
-
-}
-
-//DB connect
-
-const connectionString = "mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb"
-const dbName = "todo"
-const collectionName = "todoTasks"
-
-var collection *mongo.Collection
-
-func init() {
-	// Set the client options, specified database location by using ApplyURI
-	clientOptions := options.Client().ApplyURI(connectionString)
-
-	//Connect to mongoDB
-	client, err := mongo.Connect(context.TODO(), clientOptions)
-	if err != nil {
-		log.Fatal(err)
-	}
-	//Check the connection
-	err = client.Ping(context.TODO(), nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Connected to MongoDB!")
-
-	collection = client.Database(dbName).Collection(collectionName)
-	fmt.Println("Collection instance created!")
 
 }
 

@@ -1,11 +1,20 @@
 package models
 
-import "github.com/dgrijalva/jwt-go"
+import (
+	"github.com/dgrijalva/jwt-go"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 //Users is struct used to collect username and password
 var Users = map[string]string{
 	"user1": "password1",
 	"user2": "password2",
+}
+
+type UsersDB struct {
+	ID       primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
+	Username string             `json:"task,omitempty"`
+	Password string             `json:"status,omitempty"`
 }
 
 //JwtKey is JWT keythat use to create the signature (secret key)

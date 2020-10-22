@@ -12,13 +12,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-//PreSignin is handler function for route /
-func PreSignin() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.String(http.StatusOK, "This is Todo app, please login to start using the app")
-	}
-}
-
 //Signin is Handler function for route /signin
 func Signin() gin.HandlerFunc {
 	return func(c *gin.Context) {
