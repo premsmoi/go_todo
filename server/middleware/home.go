@@ -4,9 +4,11 @@ import (
 	"Generalkhun/go-todo-server/models"
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/gin-gonic/gin"
@@ -35,7 +37,7 @@ func Register() gin.HandlerFunc {
 			}
 		}
 		// add this user to database
-		addOneUser(userdb)
+		addOneUser(&userdb)
 		c.Redirect(http.StatusPermanentRedirect, "/")
 
 	}
@@ -51,4 +53,13 @@ func checkAlreadyused(userdb *models.UsersDB) error {
 	}
 	return nil
 
+}
+
+func addOneUser(userdb *models.UsersDB) {
+	insertResult, err := collection.InsertOne(context.Background(), userdb)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Inserted a Single Record ", insertResult.InsertedID.(primitive.ObjectID).Hex())
 }

@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -37,11 +38,13 @@ func IntiateMongoConn() *mongo.Client {
 	return client
 }
 
-func connectTodotasks(username, userpass_id string, client *mongo.Client) (string, err) {
+func connectTodotasks(username, userpassID string, client *mongo.Client) (primitive.M, error) {
 
-	username, err = client.Database(dbName).Collection("todoTasks").FindOne(context.TODO(), bson.D{{"_id", userpass_id}})
+	var result bson.M
+	condition := primitive.E{Key: "userpassID", Value: userpassID}
+	err := client.Database(dbName).Collection("todoTasks").FindOne(context.TODO(), bson.D{condition}).Decode(&result)
 
-	return collection
+	return result, err
 
 }
 
