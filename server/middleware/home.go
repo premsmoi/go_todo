@@ -26,38 +26,40 @@ func PreSignin() gin.HandlerFunc {
 func Register() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var userdb models.UsersDB
-
+		client := IntiateMongoConn() //init mongoDB connection
 		_ = json.NewDecoder(c.Request.Body).Decode(&userdb)
 		// check if username is alreadyused
-		err := checkAlreadyused(&userdb)
-		if err != nil {
-			if err == mongo.ErrNoDocuments {
-				c.JSON(http.StatusPermanentRedirect, gin.H{"message": "This Username is already used, please try again"})
-				return
-			}
+		alreadyUsed := checkAlreadyused(&userdb, client)
+		if alreadyUsed {
+			c.JSON(http.StatusPermanentRedirect, gin.H{"message": "This Username is already used, please try again"})
+			return
 		}
-		// add this user to database
-		addOneUser(&userdb)
+		// add this user to database if username is not ever used
+		addOneUser(&userdb, client)
 		c.Redirect(http.StatusPermanentRedirect, "/")
 
 	}
 
 }
 
-func checkAlreadyused(userdb *models.UsersDB) error {
+func checkAlreadyused(userdb *models.UsersDB, client *mongo.Client) bool {
 	var result bson.M
-	err := collection.FindOne(context.TODO(), bson.D{{"Username", userdb.Username}}).Decode(&result)
+	collection := client.Database("todo").Collection("UsersDB")
+	condition := primitive.E{Key: "Username", Value: userdb.Username}
+	err := collection.FindOne(context.TODO(), bson.D{condition}).Decode(&result)
 	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return true
+		}
 		log.Fatal(err)
-		return err
+		return true
 	}
-	return nil
-
+	return false
 }
 
-func addOneUser(userdb *models.UsersDB) {
+func addOneUser(userdb *models.UsersDB, client *mongo.Client) {
+	collection := client.Database("todo").Collection("UsersDB")
 	insertResult, err := collection.InsertOne(context.Background(), userdb)
-
 	if err != nil {
 		log.Fatal(err)
 	}
