@@ -22,7 +22,7 @@ func main() {
 	{
 
 		routerAuth.POST("/signin", middleware.Signin())
-		routerAuth.GET("/welcome", middleware.Welcome())
+
 		routerAuth.GET("/refresh", middleware.Refresh())
 		routerAuth.GET("/logout", middleware.Logout())
 	}
@@ -31,6 +31,7 @@ func main() {
 	routerTask := router.Group("/task")
 	routerTask.Use(middleware.AuthRequired())
 	{
+		routerTask.GET("/welcome", middleware.Welcome())
 		routerTask.GET("/", middleware.GetAllTask())
 		routerTask.POST("/", middleware.CreateTask())
 		routerTask.PUT("/:id", middleware.UndoTask())

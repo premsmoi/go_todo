@@ -6,11 +6,12 @@ import (
 )
 
 //Users is struct used to collect username and password
-var Users = map[string]string{
-	"user1": "password1",
-	"user2": "password2",
-}
+// var Users = map[string]string{
+// 	"user1": "password1",
+// 	"user2": "password2",
+// }
 
+//UsersDB is a struct that collect user information after they registered
 type UsersDB struct {
 	ID       primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
 	Username string             `json:"username,omitempty"`

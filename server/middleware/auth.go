@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"reflect"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -23,7 +24,8 @@ func Signin() gin.HandlerFunc {
 			return
 		}
 		// Get the expected password from our in memory map
-		expectedPassword, ok := models.Users[creds.Username]
+		matchedUser, err := getUserPass(creds.Username, IntiateMongoConn())
+		expectedPassword, ok := matchedUser["password"]
 
 		// If a password exists for the given user
 		// AND, if it is the same as the password we received, the we can move ahead
@@ -64,58 +66,8 @@ func Signin() gin.HandlerFunc {
 			Expires: expirationTime,
 			Path:    "/task",
 		})
+		c.Redirect(http.StatusMovedPermanently, "../task/welcome")
 	}
-}
-
-// Welcome function is a handler funciton to POST route
-func Welcome() gin.HandlerFunc {
-	return func(c *gin.Context) {
-
-		// We can obtain the session token from the requests cookies, which come with every request
-		cookie, err := c.Request.Cookie("token")
-		if err != nil {
-			if err == http.ErrNoCookie {
-				// If the cookie is not set, return an unauthorized status
-				c.Writer.WriteHeader(http.StatusUnauthorized)
-				return
-			}
-			c.Writer.WriteHeader(http.StatusInternalServerError)
-			return
-
-		}
-
-		// Get the JWT string from the cookie
-		tknStr := cookie.Value
-
-		// Initialize a new instance of `Claims`
-		claims := models.Claims{}
-
-		// Parse the JWT string and store the result in `claims`.
-		// Note that we are passing the key in this method as well. This method will return an error
-		// if the token is invalid (if it has expired according to the expiry time we set on sign in),
-		// or if the signature does not match
-		tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
-			return models.JwtKey, nil
-		})
-		if err != nil {
-			if err == jwt.ErrSignatureInvalid {
-				c.Writer.WriteHeader(http.StatusUnauthorized)
-				return
-			}
-			c.Writer.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		if !tkn.Valid {
-			c.Writer.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-
-		// Finally, return the welcome message to the user, along with their
-		// username given in the token
-		c.Writer.Write([]byte(fmt.Sprintf("Welcome %s!", claims.Username)))
-
-	}
-
 }
 
 //Logout is handler function for /logout route, used to remove token from client's cookie
@@ -243,6 +195,11 @@ func AuthRequired() gin.HandlerFunc {
 			c.AbortWithError(http.StatusUnauthorized, err)
 			return
 		}
+		// If all conditions pass, store username inside gin.Context to further use on
+		val := reflect.ValueOf(tkn.Claims).Elem()
+		username := val.FieldByName("Username").Interface().(string)
+		fmt.Println(username)
+		c.Set("contextUsername", username)
 
 	}
 }

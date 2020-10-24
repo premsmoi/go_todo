@@ -4,10 +4,12 @@ import (
 	"Generalkhun/go-todo-server/models"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -35,7 +37,14 @@ func CORSMiddleware() gin.HandlerFunc {
 // GetAllTask get all the task route
 func GetAllTask() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		cur, err := collection.Find(context.Background(), bson.D{{}})
+		// use username that pas through previous authentication process
+		u, exist := c.Get("contextUsername")
+		username := u.(string)
+
+		if !exist {
+			log.Fatal(errors.New("Context do not contains username, there are some problems"))
+		}
+		cur, err := connectTodotasks(username, IntiateMongoConn())
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -47,7 +56,6 @@ func GetAllTask() gin.HandlerFunc {
 			if e != nil {
 				log.Fatal(e)
 			}
-			// fmt.Println("cur..>", cur, "result", reflect.TypeOf(result), reflect.TypeOf(result["_id"]))
 			results = append(results, result)
 
 		}
@@ -153,4 +161,55 @@ func deleteAllTask() int64 {
 
 	fmt.Println("Deleted Document", d.DeletedCount)
 	return d.DeletedCount
+}
+
+// Welcome function is a handler funciton to /welcome route
+func Welcome() gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		// We can obtain the session token from the requests cookies, which come with every request
+		cookie, err := c.Request.Cookie("token")
+		if err != nil {
+			if err == http.ErrNoCookie {
+				// If the cookie is not set, return an unauthorized status
+				c.Writer.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			c.Writer.WriteHeader(http.StatusInternalServerError)
+			return
+
+		}
+
+		// Get the JWT string from the cookie
+		tknStr := cookie.Value
+
+		// Initialize a new instance of `Claims`
+		claims := &models.Claims{}
+
+		// Parse the JWT string and store the result in `claims`.
+		// Note that we are passing the key in this method as well. This method will return an error
+		// if the token is invalid (if it has expired according to the expiry time we set on sign in),
+		// or if the signature does not match
+		tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+			return models.JwtKey, nil
+		})
+		if err != nil {
+			if err == jwt.ErrSignatureInvalid {
+				c.Writer.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			c.Writer.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		if !tkn.Valid {
+			c.Writer.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		// Finally, return the welcome message to the user, along with their
+		// username given in the token
+		c.Writer.Write([]byte(fmt.Sprintf("Welcome %s!", claims.Username)))
+
+	}
+
 }

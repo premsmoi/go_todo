@@ -37,33 +37,19 @@ func IntiateMongoConn() *mongo.Client {
 	return client
 }
 
-//
-func connectTodotasks(username, userpassID string, client *mongo.Client) (primitive.M, error) {
+func connectTodotasks(username string, client *mongo.Client) (*mongo.Cursor, error) {
 
-	var result bson.M
-	condition := primitive.E{Key: "userpassID", Value: userpassID}
-	err := client.Database(dbName).Collection("todoTasks").FindOne(context.TODO(), bson.D{condition}).Decode(&result)
+	condition := primitive.E{Key: "Username", Value: username}
+	cur, err := client.Database(dbName).Collection("todoTasks").Find(context.TODO(), bson.D{condition})
 
-	return result, err
+	return cur, err
 
 }
 
-func getUserPass(username string) {
-	// Set the client options, specified database location by using ApplyURI
-	clientOptions := options.Client().ApplyURI(connectionString)
+func getUserPass(username string, client *mongo.Client) (primitive.M, error) {
+	var result bson.M
+	condition := primitive.E{Key: "username", Value: username}
+	err := client.Database(dbName).Collection("UsersDB").FindOne(context.TODO(), bson.D{condition}).Decode(&result)
 
-	//Connect to mongoDB
-	client, err := mongo.Connect(context.TODO(), clientOptions)
-	if err != nil {
-		log.Fatal(err)
-	}
-	//Check the connection
-	err = client.Ping(context.TODO(), nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Connected to MongoDB!")
-
-	collection = client.Database(dbName).Collection("UsersDB")
-
+	return result, err
 }
