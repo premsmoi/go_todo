@@ -39,7 +39,7 @@ func IntiateMongoConn() *mongo.Client {
 
 func connectTodotasks(username string, client *mongo.Client) (*mongo.Cursor, error) {
 
-	condition := primitive.E{Key: "Username", Value: username}
+	condition := primitive.E{Key: "username", Value: username}
 	cur, err := client.Database(dbName).Collection("todoTasks").Find(context.TODO(), bson.D{condition})
 
 	return cur, err

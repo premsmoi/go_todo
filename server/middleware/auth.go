@@ -200,6 +200,5 @@ func AuthRequired() gin.HandlerFunc {
 		username := val.FieldByName("Username").Interface().(string)
 		fmt.Println(username)
 		c.Set("contextUsername", username)
-
 	}
 }

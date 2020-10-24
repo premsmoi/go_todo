@@ -77,6 +77,14 @@ func CreateTask() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var task models.ToDoList
 		_ = json.NewDecoder(c.Request.Body).Decode(&task)
+		// insert Username gather from context
+		u, exist := c.Get("contextUsername")
+		username := u.(string)
+
+		if !exist {
+			log.Fatal(errors.New("Context do not contains username, there are some problems"))
+		}
+		task.Username = username
 		insertOneTask(task)
 		w := json.NewEncoder(c.Writer).Encode(task)
 		c.JSON(http.StatusOK, w)
@@ -85,6 +93,8 @@ func CreateTask() gin.HandlerFunc {
 
 // Insert one task in the DB
 func insertOneTask(task models.ToDoList) {
+
+	collection := IntiateMongoConn().Database(dbName).Collection("todoTasks")
 	insertResult, err := collection.InsertOne(context.Background(), task)
 
 	if err != nil {
