@@ -4,6 +4,7 @@ import (
 	"Generalkhun/go-todo-server/models"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -31,16 +32,21 @@ func Register() gin.HandlerFunc {
 		// check if username is alreadyused
 		alreadyUsed, err := checkAlreadyused(&userdb, client)
 		if err != nil {
-			log.Fatal(err)
-			return
+			if alreadyUsed {
+				c.String(http.StatusNotAcceptable, err.Error())
+
+			} else {
+				log.Fatal(err)
+				c.String(http.StatusInternalServerError, err.Error())
+
+			}
 		}
-		if alreadyUsed {
-			c.JSON(http.StatusPermanentRedirect, gin.H{"message": "This Username is already used, please try again"})
-			return
+		if !alreadyUsed {
+			// add this user to database if username is not ever used
+			addOneUser(&userdb, client)
+			c.String(http.StatusOK, "Successfully registered, your username:"+userdb.Username+", your password:"+userdb.Password)
+
 		}
-		// add this user to database if username is not ever used
-		addOneUser(&userdb, client)
-		c.Redirect(http.StatusPermanentRedirect, "/")
 
 	}
 
@@ -49,7 +55,7 @@ func Register() gin.HandlerFunc {
 func checkAlreadyused(userdb *models.UsersDB, client *mongo.Client) (bool, error) {
 	var result bson.M
 	collection := client.Database("todo").Collection("UsersDB")
-	condition := primitive.E{Key: "Username", Value: userdb.Username}
+	condition := primitive.E{Key: "username", Value: userdb.Username}
 	err := collection.FindOne(context.TODO(), bson.D{condition}).Decode(&result)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
@@ -61,7 +67,7 @@ func checkAlreadyused(userdb *models.UsersDB, client *mongo.Client) (bool, error
 		return false, err
 	}
 	fmt.Println("found doc")
-	return true, nil
+	return true, errors.New("This Username is already used, please try again")
 }
 
 func addOneUser(userdb *models.UsersDB, client *mongo.Client) {

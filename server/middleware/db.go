@@ -1,4 +1,3 @@
-//DB connect
 package middleware
 
 import (
