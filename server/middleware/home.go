@@ -29,7 +29,11 @@ func Register() gin.HandlerFunc {
 		client := IntiateMongoConn() //init mongoDB connection
 		_ = json.NewDecoder(c.Request.Body).Decode(&userdb)
 		// check if username is alreadyused
-		alreadyUsed := checkAlreadyused(&userdb, client)
+		alreadyUsed, err := checkAlreadyused(&userdb, client)
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
 		if alreadyUsed {
 			c.JSON(http.StatusPermanentRedirect, gin.H{"message": "This Username is already used, please try again"})
 			return
@@ -42,19 +46,22 @@ func Register() gin.HandlerFunc {
 
 }
 
-func checkAlreadyused(userdb *models.UsersDB, client *mongo.Client) bool {
+func checkAlreadyused(userdb *models.UsersDB, client *mongo.Client) (bool, error) {
 	var result bson.M
 	collection := client.Database("todo").Collection("UsersDB")
 	condition := primitive.E{Key: "Username", Value: userdb.Username}
 	err := collection.FindOne(context.TODO(), bson.D{condition}).Decode(&result)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			return true
+			fmt.Println("Err no  doc ")
+			return false, nil
 		}
 		log.Fatal(err)
-		return true
+		fmt.Println("Err other ")
+		return false, err
 	}
-	return false
+	fmt.Println("found doc")
+	return true, nil
 }
 
 func addOneUser(userdb *models.UsersDB, client *mongo.Client) {

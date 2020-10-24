@@ -13,8 +13,8 @@ var Users = map[string]string{
 
 type UsersDB struct {
 	ID       primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	Username string             `json:"task,omitempty"`
-	Password string             `json:"status,omitempty"`
+	Username string             `json:"username,omitempty"`
+	Password string             `json:"password,omitempty"`
 }
 
 //JwtKey is JWT keythat use to create the signature (secret key)
