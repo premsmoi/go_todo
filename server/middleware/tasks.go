@@ -18,19 +18,17 @@ import (
 //CORSMiddleware (Cross-Origin Resource Sharing) middleware that used to handle Response Header
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:8080")
-		c.Writer.Header().Set("Access-Control-Max-Age", "86400")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, UPDATE")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Origin, Authorization, Accept, Client-Security-Token, Accept-Encoding, x-access-token,set-cookie")
-		c.Writer.Header().Set("Access-Control-Expose-Headers", "Content-Length")
+		c.Writer.Header().Set("Access-Control-Allow-Origin", c.Request.Header.Get("origin"))
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "X-HTTP-Method-Override,Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Accept,accept, origin, Cache-Control, X-Requested-With, set-cookie")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,UPDATE,OPTIONS")
 
 		if c.Request.Method == "OPTIONS" {
-			fmt.Println("OPTIONS")
-			c.AbortWithStatus(200)
-		} else {
-			c.Next()
+			c.AbortWithStatus(204)
+			return
 		}
+
+		c.Next()
 	}
 }
 

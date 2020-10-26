@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import {
   Button,
   Form,
@@ -32,10 +32,13 @@ function LoginForm() {
   function submitLogin(event) {
     console.log("Submit login");
     axios
-      .post(endpoint + "/auth/signin", {
-        username: username,
-        password: password,
-      })
+      .post(
+        endpoint + "/auth/signin",
+        {
+          username: username,
+          password: password,
+        }
+      )
       .then(
         function (response) {
           setLogin(true);
@@ -43,7 +46,8 @@ function LoginForm() {
           console.log(
             "Successfully login, look at the cookie, you'll see the sent token"
           );
-          console.log(Cookies.get("token"))
+          console.log(Cookies.get());
+          console.log(response.headers);
         },
         (error) => {
           console.log(error);
