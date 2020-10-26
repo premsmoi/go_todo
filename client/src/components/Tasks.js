@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import Cookies from 'js-cookie';
 import {
   Button,
   Form,
@@ -12,7 +13,7 @@ import {
 } from "semantic-ui-react";
 let endpoint = "http://localhost:8080";
 
-function LoginForm() {
+function Tasks() {
   // set state variables
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -42,6 +43,7 @@ function LoginForm() {
           console.log(
             "Successfully login, look at the cookie, you'll see the sent token"
           );
+          console.log(Cookies.set("token"))
         },
         (error) => {
           console.log(error);
@@ -58,7 +60,7 @@ function LoginForm() {
       >
         <Grid.Column style={{ maxWidth: 450 }}>
           <Header as="h2" color="teal" textAlign="center">
-            <Image src="/logo.png" /> Login to see your todo list
+            <Image src="/logo.png" /> Register your account
           </Header>
           <Form size="large">
             <Segment stacked>
@@ -92,4 +94,4 @@ function LoginForm() {
   );
 }
 
-export default LoginForm;
+export default Tasks;

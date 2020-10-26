@@ -61,12 +61,15 @@ func Signin() gin.HandlerFunc {
 		// we also set an expiry time which is the same as the token itself
 
 		http.SetCookie(c.Writer, &http.Cookie{
-			Name:    "token",
-			Value:   tokenString,
-			Expires: expirationTime,
-			Path:    "/task",
+			Name:     "token",
+			Value:    tokenString,
+			Expires:  expirationTime,
+			Path:     "http://localhost:3000/",
+			HttpOnly: false,
 		})
-		c.Redirect(http.StatusMovedPermanently, "../task/welcome")
+		c.Writer.WriteString("go thourgh this line")
+		c.JSON(200, gin.H{"message": tokenString})
+		//c.Redirect(http.StatusMovedPermanently, "../task/welcome")
 	}
 }
 
