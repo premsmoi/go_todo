@@ -85,9 +85,6 @@ function Register() {
               </Button>
             </Segment>
           </Form>
-          <Message>
-            Not have account? <Link to="/register">Register</Link>
-          </Message>
         </Grid.Column>
       </Grid>
     </Router>

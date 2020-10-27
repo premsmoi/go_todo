@@ -1,7 +1,7 @@
 import React, { useState } from "react";
+import Register from "./Register.js";
 import axios from "axios";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import Cookies from "js-cookie";
 import {
   Button,
   Form,
@@ -18,6 +18,7 @@ function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [login, setLogin] = useState(false);
+  const [wrongPassActivated, setWrongPassActivated] = useState(false);
   // Functions
   function onChangeHandlerUsername(event) {
     setUsername(event.target.value);
@@ -39,20 +40,17 @@ function LoginForm() {
           password: password,
         },
         {
-          withCredentials: true
+          withCredentials: true,
         }
       )
       .then(
         function (response) {
           setLogin(true);
-          console.log(response);
-          console.log(
-            "Successfully login, look at the cookie, you'll see the sent token"
-          );
-          console.log(Cookies.get());
-          console.log(response.headers);
+          setWrongPassActivated(false)
+          window.location.href = "/task"
         },
         (error) => {
+          setWrongPassActivated(true);
           console.log(error);
         }
       );
@@ -86,17 +84,37 @@ function LoginForm() {
                 type="password"
                 onChange={onChangeHandlerPassword}
               />
-
-              <Button color="teal" fluid size="large" onClick={submitLogin}>
-                Login
-              </Button>
+              <Link to={login && !wrongPassActivated ? "/task" : "/loginform"}>
+                <Button fluid size="small" onClick={submitLogin}>
+                  <p>Login</p>
+                </Button>
+              </Link>
             </Segment>
           </Form>
+          <div>
+            {wrongPassActivated && (
+              <p style={{ color: "red" }}>Incorrect Username or password</p>
+            )}
+          </div>
+
           <Message>
-            Not have account? <Link to="/register">Register</Link>
+            Don't have an account yet?{" "}
+            <Link
+              to="/register"
+              onClick={() => {
+                window.location.href = "/register";
+              }}
+            >
+              Register
+            </Link>
           </Message>
-        </Grid.Column>  
+        </Grid.Column>
       </Grid>
+      <Switch>
+        <Route path="/register">
+          <Register />
+        </Route>
+      </Switch>
     </Router>
   );
 }
