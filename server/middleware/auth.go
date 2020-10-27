@@ -81,6 +81,8 @@ func Logout() gin.HandlerFunc {
 		http.SetCookie(c.Writer, &http.Cookie{
 			Name:    "token",
 			Value:   "",
+			Domain:  "127.0.0.1:3000",
+			Path:    "/",
 			Expires: time.Now().Add(5 * time.Minute),
 		})
 		c.Redirect(http.StatusPermanentRedirect, "/")
@@ -141,7 +143,8 @@ func Refresh() gin.HandlerFunc {
 			Name:    "token",
 			Value:   tokenString,
 			Expires: expirationTime,
-			Path:    "/task",
+			Domain:  "127.0.0.1:3000",
+			Path:    "/",
 		})
 
 	}

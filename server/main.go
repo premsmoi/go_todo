@@ -32,8 +32,8 @@ func main() {
 	routerTask.Use(middleware.AuthRequired())
 	{
 		routerTask.GET("/welcome", middleware.Welcome())
-		routerTask.GET("/", middleware.GetAllTask())
-		routerTask.POST("/", middleware.CreateTask())
+		routerTask.GET("/getTasks", middleware.GetAllTask())
+		routerTask.POST("/createTasks", middleware.CreateTask())
 		routerTask.PUT("/:id", middleware.UndoTask())
 		routerTask.DELETE("/:id", middleware.DeleteTask())
 

@@ -1,13 +1,24 @@
 import React, { Component, useState } from "react";
 import axios from "axios";
-import { Card, Header, Form, Input, Icon, Button, ItemDescription } from "semantic-ui-react";
+import {
+  Card,
+  Header,
+  Form,
+  Input,
+  Icon,
+  Button,
+  ItemDescription,
+} from "semantic-ui-react";
 
 let endpoint = "http://127.0.0.1:8080";
 
 function Tasks(props) {
   // state variable
   const [task, setTask] = useState("");
-  const [item,setItem] = useState([])
+  const [item, setItem] = useState([]);
+
+  //initiate tasks from the user
+  getTask();
 
   //Handler functions
   function onChangeHandlers(event) {
@@ -33,11 +44,13 @@ function Tasks(props) {
         });
     }
   }
-  //task function
+  //task functions
   // gettask: get all task from db
   function getTask() {
-    axios.get(endpoint + "/task").then((res) => {
-      console.log(res);
+    console.log("hey")
+    axios.get(endpoint + "/task/getTasks",{ withCredentials: true}).then((response) => {
+      var res = JSON.stringify(response)
+      console.log(res)
       if (res.data) {
         setItem(
           res.data.map((item) => {
@@ -56,34 +69,33 @@ function Tasks(props) {
                     <Icon
                       name="check circle"
                       color="green"
-                      onClick={() => this.updateTask(item._id)}
+                      //onClick={() => this.updateTask(item._id)}
                     />
                     <span style={{ paddingRight: 10 }}>Done</span>
                     <Icon
                       name="undo"
                       color="yellow"
-                      onClick={() => this.undoTask(item._id)}
+                      //onClick={() => this.undoTask(item._id)}
                     />
                     <span style={{ paddingRight: 10 }}>Undo</span>
                     <Icon
                       name="delete"
                       color="red"
-                      onClick={() => this.deleteTask(item._id)}
+                      //onClick={() => this.deleteTask(item._id)}
                     />
                     <span style={{ paddingRight: 10 }}>Delete</span>
                   </Card.Meta>
                 </Card.Content>
               </Card>
             );
-            
           })
-        )
-        
+        );
       } else {
-        setItem([])
+        setItem([]);
       }
     });
   }
+
   return (
     <div>
       <div className="row">
