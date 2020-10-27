@@ -11,7 +11,7 @@ import {
   Message,
   Segment,
 } from "semantic-ui-react";
-let endpoint = "http://localhost:8080";
+let endpoint = "http://127.0.0.1:8080";
 
 function LoginForm() {
   // set state variables
@@ -37,6 +37,9 @@ function LoginForm() {
         {
           username: username,
           password: password,
+        },
+        {
+          withCredentials: true
         }
       )
       .then(
@@ -92,7 +95,7 @@ function LoginForm() {
           <Message>
             Not have account? <Link to="/register">Register</Link>
           </Message>
-        </Grid.Column>
+        </Grid.Column>  
       </Grid>
     </Router>
   );

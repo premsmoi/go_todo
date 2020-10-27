@@ -18,7 +18,9 @@ import (
 //CORSMiddleware (Cross-Origin Resource Sharing) middleware that used to handle Response Header
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", c.Request.Header.Get("origin"))
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://127.0.0.1:3000")
+
+		//c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "X-HTTP-Method-Override,Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Accept,accept, origin, Cache-Control, X-Requested-With, set-cookie")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,UPDATE,OPTIONS")

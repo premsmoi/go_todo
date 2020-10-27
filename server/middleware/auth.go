@@ -64,7 +64,9 @@ func Signin() gin.HandlerFunc {
 			Name:    "token",
 			Value:   tokenString,
 			Expires: expirationTime,
-			Path:    "http://localhost:3000/*",
+			//Domain:  "localhost:3000",
+			Domain: "127.0.0.1:3000",
+			Path:   "/",
 		})
 		c.Writer.WriteString("go thourgh this line")
 		c.JSON(200, gin.H{"message": tokenString})
