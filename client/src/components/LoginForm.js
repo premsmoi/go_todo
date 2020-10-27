@@ -11,6 +11,7 @@ import {
   Message,
   Segment,
 } from "semantic-ui-react";
+import 'semantic-ui-css/semantic.min.css'
 let endpoint = "http://127.0.0.1:8080";
 
 function LoginForm() {
