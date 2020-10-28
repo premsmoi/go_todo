@@ -17,18 +17,34 @@ function Tasks(props) {
   function onChangeHandlers(event) {
     setTask(event.target.value);
   }
-  
+
+  //Authen function
+  function RefreshToken() {
+    axios
+      .get(endpoint + "/auth/refresh",{ withCredentials: true })
+      .then(() => {
+        console.log("token refreshed");
+      });
+  }
+  function logOut() {
+    axios
+      .get(endpoint + "/auth/logout", {},{ withCredentials: true })
+      .then(() =>{
+        console.log("loged out")
+        window.location.href = "/loginform"
+      })
+  }
+
   //task functions
   // gettask: get all task from db
   function GetTask() {
-    console.log("hey");
+    RefreshToken(); //refresh token
     useEffect(() => {
       axios
         .get(endpoint + "/task/getTasks", { withCredentials: true })
         .then((response) => {
           var responseData = response.data;
           // set username to display as welcome message
-
           setUsername(
             responseData.slice(
               responseData.indexOf("?") + 1,
@@ -39,7 +55,7 @@ function Tasks(props) {
           var todoArray = responseData.slice(0, responseData.indexOf("?") - 1);
 
           todoArray = JSON.parse(todoArray);
-          if (todoArray.length > 0) {
+          if (todoArray) {
             var mappedItem = todoArray.map((item) => {
               let color = "yellow";
               if (item.status) {
@@ -81,72 +97,73 @@ function Tasks(props) {
             setItem([]);
           }
         });
-    },[]);
+    }, []);
   }
 
-  function updateTask(){
+  function updateTask() {
+    RefreshToken(); //refresh token
     axios
-    .get(endpoint + "/task/getTasks", { withCredentials: true })
-    .then((response) => {
-      var responseData = response.data;
-      // set username to display as welcome message
+      .get(endpoint + "/task/getTasks", { withCredentials: true })
+      .then((response) => {
+        var responseData = response.data;
+        // set username to display as welcome message
 
-      setUsername(
-        responseData.slice(
-          responseData.indexOf("?") + 1,
-          responseData.length - 1
-        )
-      );
-      console.log(username);
-      var todoArray = responseData.slice(0, responseData.indexOf("?") - 1);
+        setUsername(
+          responseData.slice(
+            responseData.indexOf("?") + 1,
+            responseData.length - 1
+          )
+        );
+        console.log(username);
+        var todoArray = responseData.slice(0, responseData.indexOf("?") - 1);
 
-      todoArray = JSON.parse(todoArray);
-      if (todoArray.length > 0) {
-        var mappedItem = todoArray.map((item) => {
-          let color = "yellow";
-          if (item.status) {
-            color = "green";
-          }
-          return (
-            <Card key={item._id} color={color} fluid>
-              <Card.Content>
-                <Card.Header textAlign="left">
-                  <div style={{ wordWrap: "break-word" }}>{item.task}</div>
-                </Card.Header>
+        todoArray = JSON.parse(todoArray);
+        if (todoArray.length > 0) {
+          var mappedItem = todoArray.map((item) => {
+            let color = "yellow";
+            if (item.status) {
+              color = "green";
+            }
+            return (
+              <Card key={item._id} color={color} fluid>
+                <Card.Content>
+                  <Card.Header textAlign="left">
+                    <div style={{ wordWrap: "break-word" }}>{item.task}</div>
+                  </Card.Header>
 
-                <Card.Meta textAlign="right">
-                  <Icon
-                    name="check circle"
-                    color="green"
-                    onClick={() => completeTask(item._id)}
-                  />
-                  <span style={{ paddingRight: 10 }}>Done</span>
-                  <Icon
-                    name="undo"
-                    color="yellow"
-                    onClick={() => undoTask(item._id)}
-                  />
-                  <span style={{ paddingRight: 10 }}>Undo</span>
-                  <Icon
-                    name="delete"
-                    color="red"
-                    onClick={() => deleteTask(item._id)}
-                  />
-                  <span style={{ paddingRight: 10 }}>Delete</span>
-                </Card.Meta>
-              </Card.Content>
-            </Card>
-          );
-        });
-        setItem(mappedItem);
-      } else {
-        setItem([]);
-      }
-    })
-
+                  <Card.Meta textAlign="right">
+                    <Icon
+                      name="check circle"
+                      color="green"
+                      onClick={() => completeTask(item._id)}
+                    />
+                    <span style={{ paddingRight: 10 }}>Done</span>
+                    <Icon
+                      name="undo"
+                      color="yellow"
+                      onClick={() => undoTask(item._id)}
+                    />
+                    <span style={{ paddingRight: 10 }}>Undo</span>
+                    <Icon
+                      name="delete"
+                      color="red"
+                      onClick={() => deleteTask(item._id)}
+                    />
+                    <span style={{ paddingRight: 10 }}>Delete</span>
+                  </Card.Meta>
+                </Card.Content>
+              </Card>
+            );
+          });
+          setItem(mappedItem);
+        } else {
+          setItem([]);
+        }
+      });
   }
 
   function undoTask(id) {
+    RefreshToken(); //refresh token
     axios
       .put(endpoint + "/task/undoTask/" + id, {}, { withCredentials: true })
       .then((res) => {
@@ -156,6 +173,7 @@ function Tasks(props) {
   }
 
   function completeTask(id) {
+    RefreshToken(); //refresh token
     console.log("code is here");
     axios
       .put(endpoint + "/task/completeTask/" + id, {}, { withCredentials: true })
@@ -167,6 +185,7 @@ function Tasks(props) {
   }
 
   function deleteTask(id) {
+    RefreshToken(); //refresh token
     //Becareful, axios.delete has different structure: header is on second argument
     axios
       .delete(endpoint + "/task/deleteTask/" + id, { withCredentials: true })
@@ -177,17 +196,20 @@ function Tasks(props) {
   }
 
   function createTask(event) {
-    if(task !== ""){
+    RefreshToken(); //refresh token
+    if (task !== "") {
       axios
-        .post(endpoint + "/task/createTask",{task},{withCredentials:true})
-        .then((res)=>{
-          console.log("Task Added")
-          updateTask()
-        })
+        .post(
+          endpoint + "/task/createTask",
+          { task },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          console.log("Task Added");
+          updateTask();
+        });
     }
   }
-
-
 
   //render
   return (
@@ -212,6 +234,9 @@ function Tasks(props) {
       </div>
       <div className="row">
         <Card.Group>{item}</Card.Group>
+      </div>
+      <div>
+      <Button onClick={logOut}>Log out</Button>
       </div>
     </div>
   );

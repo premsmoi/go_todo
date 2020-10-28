@@ -22,7 +22,6 @@ func main() {
 	{
 
 		routerAuth.POST("/signin", middleware.Signin())
-
 		routerAuth.GET("/refresh", middleware.Refresh())
 		routerAuth.GET("/logout", middleware.Logout())
 	}
