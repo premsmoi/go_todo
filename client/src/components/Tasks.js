@@ -8,6 +8,7 @@ import {
   Input,
   Icon,
   Button,
+  Confirm
 } from "semantic-ui-react";
 import "semantic-ui-css/semantic.min.css";
 let endpoint = "http://127.0.0.1:8080";
@@ -17,6 +18,7 @@ function Tasks(props) {
   const [task, setTask] = useState("");
   const [item, setItem] = useState([]);
   const [username, setUsername] = useState("");
+  const [open,setOpen] = useState(false)
 
   //initiate tasks from the user
   GetTask();
@@ -217,6 +219,22 @@ function Tasks(props) {
     }
   }
 
+  function deleteAllTask(){
+    RefreshToken(); //refresh token
+    axios
+      .delete(
+        endpoint + "/task/deleteAllTask",
+        { withCredentials: true }
+      )
+      .then(()=>{
+        console.log("deleted all tasks")
+        setOpen(false)
+        updateTask()
+      }
+      )
+    
+  }
+
   //render
   return (
     <div>
@@ -242,8 +260,16 @@ function Tasks(props) {
             fluid
             placeholder="Create Task"
           />
-          <Button color="teal" basic = {true} inverted onClick={createTask}>Create Task</Button>
+          
         </Form>
+        <Button color="teal" basic = {true} inverted onClick={createTask}>Create Task</Button>
+        <Button color="red" basic = {true} inverted onClick={()=> {setOpen(true)}}>Delete All Task</Button>
+        <Confirm
+          open={open}
+          onCancel={() => {setOpen(false)}}
+          onConfirm={deleteAllTask}
+          content = {"Delete All task, are you sure?"}
+        />
       </div>
       </Segment>
       <div className="row">

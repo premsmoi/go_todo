@@ -4,8 +4,7 @@ import { Container } from "react-bootstrap";
 import LoginForm from "./components/LoginForm";
 import Register from "./components/Register";
 import Tasks from "./components/Tasks";
-import Homepage from "./components/Homepage.js";
-import { BrowserRouter as Router, Redirect,Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router,Switch, Route } from "react-router-dom";
 
 function App() {
   return (
@@ -24,7 +23,7 @@ function App() {
               <Tasks />
             </Route>
             <Route>
-              <Homepage />
+              <LoginForm />
             </Route>
           </Switch>
         </Container>

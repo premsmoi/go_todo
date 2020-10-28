@@ -107,7 +107,7 @@ function LoginForm() {
                 window.location.href = "/register";
               }}
             >
-              Register
+              Create account
             </Link>
           </Message>
           <Message size = {"mini"} color = {"teal"}>
@@ -115,7 +115,7 @@ function LoginForm() {
           <Message size = {"small"} color = {"green"}>
               This is a small Todo-app project made with Go, React and MongoDB. Source code of this project is on <a href = "https://github.com/Generalkhun/go_todo">Github</a> :)
           </Message>
-          <Image size = {"mini"} floated = {"center"} src = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Go_Logo_Blue.svg/1200px-Go_Logo_Blue.svg.png"/>{" "}
+          <Image size = {"small"} floated = {"center"} src = "https://blog.mgechev.com/images/revive/revive.png"/>{" "}
           <Image size = {"mini"} src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/220px-React-icon.svg.png"/>
           <Image size = {"mini"} src = "https://assets.stickpng.com/thumbs/58481021cef1014c0b5e494b.png"/>{" "}
          

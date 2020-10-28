@@ -36,11 +36,8 @@ func main() {
 		routerTask.PUT("/undoTask/:id", middleware.UndoTask())
 		routerTask.PUT("/completeTask/:id", middleware.CompleteTask())
 		routerTask.DELETE("/deleteTask/:id", middleware.DeleteTask())
+		routerTask.DELETE("/deleteAllTask", middleware.DeleteAllTask())
 
-	}
-	routerTask2 := router.Group("/task2")
-	{
-		routerTask2.DELETE("/deleteAllTask", middleware.DeleteAllTask())
 	}
 
 	//Run the server

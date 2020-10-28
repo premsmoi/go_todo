@@ -69,7 +69,7 @@ function Register() {
       >
         <Grid.Column style={{ maxWidth: 450 }}>
           <Header as="h2" color="teal" textAlign="center">
-            <Image src="https://banner2.cleanpng.com/20180425/pxe/kisspng-colored-pencil-clip-art-5ae0902950fb02.3622818715246664093317.jpg" /> Register your account
+            <Image src="https://banner2.cleanpng.com/20180425/pxe/kisspng-colored-pencil-clip-art-5ae0902950fb02.3622818715246664093317.jpg" /> Create your account
           </Header>
           <Form size="large">
             <Segment stacked>
