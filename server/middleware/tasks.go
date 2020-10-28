@@ -123,6 +123,7 @@ func undoTask(task string) {
 	id, _ := primitive.ObjectIDFromHex(task)
 	filter := bson.M{"_id": id}
 	update := bson.M{"$set": bson.M{"status": false}}
+	collection := IntiateMongoConn().Database(dbName).Collection("todoTasks")
 	result, err := collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		log.Fatal(err)
@@ -137,6 +138,7 @@ func CompleteTask() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// params := mux.Vars(r)
 		// undoTask(params["id"])
+		fmt.Println("gocode is here")
 		completeTask(c.Param("id"))
 		json.NewEncoder(c.Writer).Encode(c.Param("id"))
 
@@ -145,10 +147,12 @@ func CompleteTask() gin.HandlerFunc {
 
 //task done method, update task's status to true
 func completeTask(task string) {
-	fmt.Println(task)
+	fmt.Println("the task is:" + task)
 	id, _ := primitive.ObjectIDFromHex(task)
 	filter := bson.M{"_id": id}
 	update := bson.M{"$set": bson.M{"status": true}}
+	fmt.Println(filter, update)
+	collection := IntiateMongoConn().Database(dbName).Collection("todoTasks")
 	result, err := collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		log.Fatal(err)
@@ -172,6 +176,7 @@ func deleteOneTask(task string) {
 	fmt.Println(task)
 	id, _ := primitive.ObjectIDFromHex(task)
 	filter := bson.M{"_id": id}
+	collection := IntiateMongoConn().Database(dbName).Collection("todoTasks")
 	d, err := collection.DeleteOne(context.Background(), filter)
 	if err != nil {
 		log.Fatal(err)
@@ -191,6 +196,7 @@ func DeleteAllTask() gin.HandlerFunc {
 
 // delete all the tasks from the DB
 func deleteAllTask() int64 {
+	collection := IntiateMongoConn().Database(dbName).Collection("todoTasks")
 	d, err := collection.DeleteMany(context.Background(), bson.D{{}}, nil)
 	if err != nil {
 		log.Fatal(err)

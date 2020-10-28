@@ -161,7 +161,7 @@ func AuthRequired() gin.HandlerFunc {
 			if err == http.ErrNoCookie {
 				// If the cookie is not set, return an unauthorized status
 				c.Writer.WriteString("No cookie!!!")
-
+				fmt.Println("no cookie")
 				c.AbortWithError(http.StatusUnauthorized, err)
 				return
 			}

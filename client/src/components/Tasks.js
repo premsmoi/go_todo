@@ -103,7 +103,7 @@ function Tasks(props) {
 
   function undoTask(id) {
     axios
-      .put(endpoint + "/task/undoTask/" + id,{ withCredentials: true })
+      .put(endpoint + "/task/undoTask/" + id,{},{ withCredentials: true })
       .then(res => {
         console.log(res);
         GetTask();
@@ -111,9 +111,11 @@ function Tasks(props) {
   };
 
   function completeTask(id) {
+    console.log("code is here")
     axios
-      .put(endpoint + "/task/completeTask/" + id,{ withCredentials: true })
+      .put(endpoint + "/task/completeTask/" + id,{},{ withCredentials: true })
       .then(res => {
+        console.log("code is her2")
         console.log(res);
         GetTask();
       });
@@ -121,7 +123,7 @@ function Tasks(props) {
 
   function deleteTask(id) {
     axios
-      .delete(endpoint + "/task/deleteTask" + id,{ withCredentials: true })
+      .delete(endpoint + "/task/deleteTask" + id,{},{ withCredentials: true })
       .then(res => {
         console.log(res);
         GetTask();
@@ -135,6 +137,7 @@ function Tasks(props) {
         <Header className="header" as="h2">
           Hi {username}, want you want to do next?
         </Header>
+      
       </div>
       <div className="row">
         <Form>
