@@ -17,7 +17,6 @@ function Register() {
   // set state variables
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [login, setLogin] = useState(false);
   // Functions
   function onChangeHandlerUsername(event) {
     setUsername(event.target.value);
@@ -29,21 +28,20 @@ function Register() {
     console.log(password);
   }
 
-  function submitLogin(event) {
-    console.log("Submit login");
+  function submitReigister(event) {
+    console.log("Submit Register");
     axios
-      .post(endpoint + "/auth/signin", {
+      .post(endpoint + "/register", {
         username: username,
         password: password,
       })
       .then(
         function (response) {
-          setLogin(true);
           console.log(response);
           console.log(
-            "Successfully login, look at the cookie, you'll see the sent token"
+            "Successfully Register"
           );
-          console.log(Cookies.set("token"))
+          window.location.href = "/loginform"
         },
         (error) => {
           console.log(error);
@@ -80,8 +78,8 @@ function Register() {
                 onChange={onChangeHandlerPassword}
               />
 
-              <Button color="teal" fluid size="large" onClick={submitLogin}>
-                Login
+              <Button color="teal" fluid size="large" onClick={submitReigister}>
+                Register
               </Button>
             </Segment>
           </Form>

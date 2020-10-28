@@ -21,18 +21,16 @@ function Tasks(props) {
   //Authen function
   function RefreshToken() {
     axios
-      .get(endpoint + "/auth/refresh",{ withCredentials: true })
+      .get(endpoint + "/auth/refresh", { withCredentials: true })
       .then(() => {
         console.log("token refreshed");
       });
   }
   function logOut() {
-    axios
-      .get(endpoint + "/auth/logout", {},{ withCredentials: true })
-      .then(() =>{
-        console.log("loged out")
-        window.location.href = "/loginform"
-      })
+    axios.get(endpoint + "/auth/logout", { withCredentials: true }).then(() => {
+      console.log("loged out");
+      window.location.href = "/loginform";
+    });
   }
 
   //task functions
@@ -236,7 +234,7 @@ function Tasks(props) {
         <Card.Group>{item}</Card.Group>
       </div>
       <div>
-      <Button onClick={logOut}>Log out</Button>
+        <Button onClick={logOut}>Log out</Button>
       </div>
     </div>
   );
