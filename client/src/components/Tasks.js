@@ -73,19 +73,19 @@ function Tasks(props) {
                       <Icon
                         name="check circle"
                         color="green"
-                        //onClick={() => this.updateTask(item._id)}
+                        onClick={() => completeTask(item._id)}
                       />
                       <span style={{ paddingRight: 10 }}>Done</span>
                       <Icon
                         name="undo"
                         color="yellow"
-                        //onClick={() => this.undoTask(item._id)}
+                        onClick={() => undoTask(item._id)}
                       />
                       <span style={{ paddingRight: 10 }}>Undo</span>
                       <Icon
                         name="delete"
                         color="red"
-                        //onClick={() => this.deleteTask(item._id)}
+                        onClick={() => deleteTask(item._id)}
                       />
                       <span style={{ paddingRight: 10 }}>Delete</span>
                     </Card.Meta>
@@ -101,6 +101,34 @@ function Tasks(props) {
     }, []);
   }
 
+  function undoTask(id) {
+    axios
+      .put(endpoint + "/task/undoTask/" + id,{ withCredentials: true })
+      .then(res => {
+        console.log(res);
+        GetTask();
+      });
+  };
+
+  function completeTask(id) {
+    axios
+      .put(endpoint + "/task/completeTask/" + id,{ withCredentials: true })
+      .then(res => {
+        console.log(res);
+        GetTask();
+      });
+  };
+
+  function deleteTask(id) {
+    axios
+      .delete(endpoint + "/task/deleteTask" + id,{ withCredentials: true })
+      .then(res => {
+        console.log(res);
+        GetTask();
+      });
+  };
+
+  //render 
   return (
     <div>
       <div className="row">

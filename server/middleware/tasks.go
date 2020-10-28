@@ -131,6 +131,32 @@ func undoTask(task string) {
 	fmt.Println("modified count: ", result.ModifiedCount)
 }
 
+// CompleteTask done the undone task route
+func CompleteTask() gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+		// params := mux.Vars(r)
+		// undoTask(params["id"])
+		completeTask(c.Param("id"))
+		json.NewEncoder(c.Writer).Encode(c.Param("id"))
+
+	}
+}
+
+//task done method, update task's status to true
+func completeTask(task string) {
+	fmt.Println(task)
+	id, _ := primitive.ObjectIDFromHex(task)
+	filter := bson.M{"_id": id}
+	update := bson.M{"$set": bson.M{"status": true}}
+	result, err := collection.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("modified count: ", result.ModifiedCount)
+}
+
 // DeleteTask delete one task route
 func DeleteTask() gin.HandlerFunc {
 	return func(c *gin.Context) {

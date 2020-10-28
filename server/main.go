@@ -34,8 +34,9 @@ func main() {
 		routerTask.GET("/welcome", middleware.Welcome())
 		routerTask.GET("/getTasks", middleware.GetAllTask())
 		routerTask.POST("/createTasks", middleware.CreateTask())
-		routerTask.PUT("/:id", middleware.UndoTask())
-		routerTask.DELETE("/:id", middleware.DeleteTask())
+		routerTask.PUT("/undoTask/:id", middleware.UndoTask())
+		routerTask.PUT("/completeTask/:id", middleware.CompleteTask())
+		routerTask.DELETE("/deleteTask/:id", middleware.DeleteTask())
 
 	}
 	routerTask2 := router.Group("/task2")
