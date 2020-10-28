@@ -124,7 +124,7 @@ function Tasks(props) {
         var todoArray = responseData.slice(0, responseData.indexOf("?") - 1);
 
         todoArray = JSON.parse(todoArray);
-        if (todoArray.length > 0) {
+        if (todoArray) {
           var mappedItem = todoArray.map((item) => {
             let color = "yellow";
             if (item.status) {

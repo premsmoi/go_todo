@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import Cookies from "js-cookie";
+import { BrowserRouter as Router} from "react-router-dom";
+
 import {
   Button,
   Form,
@@ -18,18 +18,29 @@ function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [invalidUsername, setInvalidUsername] = useState(false)
+  const [nonBlank, setNonBlank] = useState(false)
   // Functions
   function onChangeHandlerUsername(event) {
     setUsername(event.target.value);
+    if (username !== "" ){
+      setNonBlank(true)
+    }
     console.log(username);
   }
 
   function onChangeHandlerPassword(event) {
     setPassword(event.target.value);
+    if (password !== "" ){
+      setNonBlank(true)
+    }
     console.log(password);
   }
 
   function submitReigister(event) {
+    if (username === "" || password === ""){
+      setInvalidUsername(true)
+      return
+    }
     console.log("Submit Register");
     axios
       .post(endpoint + "/register", {
@@ -79,7 +90,7 @@ function Register() {
               />
               <div>
                 {invalidUsername && (
-                  <p style={{ color: "red" }}>the username already being used</p>
+                  <p style={{ color: "red" }}>{nonBlank ? "the username already being used": "Please fill both username and password"}</p>
                 )}
               </div>
 
