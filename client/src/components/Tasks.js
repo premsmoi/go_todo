@@ -47,16 +47,18 @@ function Tasks(props) {
         .then((response) => {
           var responseData = response.data;
           // set username to display as welcome message
+
           setUsername(
             responseData.slice(
               responseData.indexOf("?") + 1,
               responseData.length - 1
             )
-          ); 
+          );
+          console.log(username);
           var todoArray = responseData.slice(0, responseData.indexOf("?") - 1);
 
           todoArray = JSON.parse(todoArray);
-          if (todoArray) {
+          if (todoArray.length > 0) {
             var mappedItem = todoArray.map((item) => {
               let color = "yellow";
               if (item.status) {
@@ -98,46 +100,108 @@ function Tasks(props) {
             setItem([]);
           }
         });
-    }, []);
+    },[]);
+  }
+
+  function updateTask(){
+    axios
+    .get(endpoint + "/task/getTasks", { withCredentials: true })
+    .then((response) => {
+      var responseData = response.data;
+      // set username to display as welcome message
+
+      setUsername(
+        responseData.slice(
+          responseData.indexOf("?") + 1,
+          responseData.length - 1
+        )
+      );
+      console.log(username);
+      var todoArray = responseData.slice(0, responseData.indexOf("?") - 1);
+
+      todoArray = JSON.parse(todoArray);
+      if (todoArray.length > 0) {
+        var mappedItem = todoArray.map((item) => {
+          let color = "yellow";
+          if (item.status) {
+            color = "green";
+          }
+          return (
+            <Card key={item._id} color={color} fluid>
+              <Card.Content>
+                <Card.Header textAlign="left">
+                  <div style={{ wordWrap: "break-word" }}>{item.task}</div>
+                </Card.Header>
+
+                <Card.Meta textAlign="right">
+                  <Icon
+                    name="check circle"
+                    color="green"
+                    onClick={() => completeTask(item._id)}
+                  />
+                  <span style={{ paddingRight: 10 }}>Done</span>
+                  <Icon
+                    name="undo"
+                    color="yellow"
+                    onClick={() => undoTask(item._id)}
+                  />
+                  <span style={{ paddingRight: 10 }}>Undo</span>
+                  <Icon
+                    name="delete"
+                    color="red"
+                    onClick={() => deleteTask(item._id)}
+                  />
+                  <span style={{ paddingRight: 10 }}>Delete</span>
+                </Card.Meta>
+              </Card.Content>
+            </Card>
+          );
+        });
+        setItem(mappedItem);
+      } else {
+        setItem([]);
+      }
+    })
+
   }
 
   function undoTask(id) {
     axios
-      .put(endpoint + "/task/undoTask/" + id,{},{ withCredentials: true })
-      .then(res => {
+      .put(endpoint + "/task/undoTask/" + id, {}, { withCredentials: true })
+      .then((res) => {
         console.log(res);
-        GetTask();
+        updateTask();
       });
-  };
+  }
 
   function completeTask(id) {
-    console.log("code is here")
+    console.log("code is here");
     axios
-      .put(endpoint + "/task/completeTask/" + id,{},{ withCredentials: true })
-      .then(res => {
-        console.log("code is her2")
+      .put(endpoint + "/task/completeTask/" + id, {}, { withCredentials: true })
+      .then((res) => {
+        console.log("code is her2");
         console.log(res);
-        GetTask();
+        updateTask();
       });
-  };
+  }
 
   function deleteTask(id) {
+    //Becareful, axios.delete has different structure: header is on second argument
     axios
-      .delete(endpoint + "/task/deleteTask" + id,{},{ withCredentials: true })
-      .then(res => {
+      .delete(endpoint + "/task/deleteTask/" + id, { withCredentials: true })
+      .then((res) => {
         console.log(res);
-        GetTask();
+        updateTask();
       });
-  };
+  }
 
-  //render 
+  //render
   return (
     <div>
       <div className="row">
         <Header className="header" as="h2">
           Hi {username}, want you want to do next?
         </Header>
-      
       </div>
       <div className="row">
         <Form>
