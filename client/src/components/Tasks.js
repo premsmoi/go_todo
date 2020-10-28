@@ -17,26 +17,7 @@ function Tasks(props) {
   function onChangeHandlers(event) {
     setTask(event.target.value);
   }
-  function onSubmitHandler() {
-    console.log("pRINTING task", task);
-    if (task) {
-      axios
-        .post(
-          endpoint + "/task",
-          {
-            task,
-          },
-          {
-            withCredentials: true,
-          }
-        )
-        .then((res) => {
-          GetTask();
-          setTask("");
-          console.log(res);
-        });
-    }
-  }
+  
   //task functions
   // gettask: get all task from db
   function GetTask() {
@@ -195,6 +176,19 @@ function Tasks(props) {
       });
   }
 
+  function createTask(event) {
+    if(task !== ""){
+      axios
+        .post(endpoint + "/task/createTask",{task},{withCredentials:true})
+        .then((res)=>{
+          console.log("Task Added")
+          updateTask()
+        })
+    }
+  }
+
+
+
   //render
   return (
     <div>
@@ -213,7 +207,7 @@ function Tasks(props) {
             fluid
             placeholder="Create Task"
           />
-          <Button onClick={onSubmitHandler}>Create Task</Button>
+          <Button onClick={createTask}>Create Task</Button>
         </Form>
       </div>
       <div className="row">
