@@ -1,13 +1,14 @@
 import React, { Component, useEffect, useState } from "react";
 import axios from "axios";
 import { Card, Header, Form, Input, Icon, Button } from "semantic-ui-react";
-import 'semantic-ui-css/semantic.min.css'
+import "semantic-ui-css/semantic.min.css";
 let endpoint = "http://127.0.0.1:8080";
 
 function Tasks(props) {
   // state variable
   const [task, setTask] = useState("");
   const [item, setItem] = useState([]);
+  const [username, setUsername] = useState("");
 
   //initiate tasks from the user
   GetTask();
@@ -44,69 +45,67 @@ function Tasks(props) {
       axios
         .get(endpoint + "/task/getTasks", { withCredentials: true })
         .then((response) => {
-          // var res = JSON.stringify(response);
-          // console.log(response)
-          // console.log(response.data)
-        
-          var todoArray = JSON.parse(
-            response.data.replace("null","") // remove at the end 
-          )
-          console.log(todoArray);
-          console.log(typeof(todoArray))
-          if (todoArray) {
-            var mappedItem = (
-              (todoArray).map((item) => {
-                let color = "yellow";
-                if (item.status) {
-                  color = "green";
-                }
-                return (
-                  <Card key={item._id} color={color} fluid>
-                    <Card.Content>
-                      <Card.Header textAlign="left">
-                        <div style={{ wordWrap: "break-word" }}>
-                          {item.task}
-                        </div>
-                      </Card.Header>
+          var responseData = response.data;
+          // set username to display as welcome message
+          setUsername(
+            responseData.slice(
+              responseData.indexOf("?") + 1,
+              responseData.length - 1
+            )
+          ); 
+          var todoArray = responseData.slice(0, responseData.indexOf("?") - 1);
 
-                      <Card.Meta textAlign="right">
-                        <Icon
-                          name="check circle"
-                          color="green"
-                          //onClick={() => this.updateTask(item._id)}
-                        />
-                        <span style={{ paddingRight: 10 }}>Done</span>
-                        <Icon
-                          name="undo"
-                          color="yellow"
-                          //onClick={() => this.undoTask(item._id)}
-                        />
-                        <span style={{ paddingRight: 10 }}>Undo</span>
-                        <Icon
-                          name="delete"
-                          color="red"
-                          //onClick={() => this.deleteTask(item._id)}
-                        />
-                        <span style={{ paddingRight: 10 }}>Delete</span>
-                      </Card.Meta>
-                    </Card.Content>
-                  </Card>
-                );
-              })
-            ) 
-            setItem(mappedItem)
+          todoArray = JSON.parse(todoArray);
+          if (todoArray) {
+            var mappedItem = todoArray.map((item) => {
+              let color = "yellow";
+              if (item.status) {
+                color = "green";
+              }
+              return (
+                <Card key={item._id} color={color} fluid>
+                  <Card.Content>
+                    <Card.Header textAlign="left">
+                      <div style={{ wordWrap: "break-word" }}>{item.task}</div>
+                    </Card.Header>
+
+                    <Card.Meta textAlign="right">
+                      <Icon
+                        name="check circle"
+                        color="green"
+                        //onClick={() => this.updateTask(item._id)}
+                      />
+                      <span style={{ paddingRight: 10 }}>Done</span>
+                      <Icon
+                        name="undo"
+                        color="yellow"
+                        //onClick={() => this.undoTask(item._id)}
+                      />
+                      <span style={{ paddingRight: 10 }}>Undo</span>
+                      <Icon
+                        name="delete"
+                        color="red"
+                        //onClick={() => this.deleteTask(item._id)}
+                      />
+                      <span style={{ paddingRight: 10 }}>Delete</span>
+                    </Card.Meta>
+                  </Card.Content>
+                </Card>
+              );
+            });
+            setItem(mappedItem);
           } else {
             setItem([]);
           }
         });
-    },[]);
+    }, []);
   }
 
   return (
     <div>
       <div className="row">
         <Header className="header" as="h2">
-          Your todolist
+          Hi {username}, want you want to do next?
         </Header>
       </div>
       <div className="row">

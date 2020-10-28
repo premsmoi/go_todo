@@ -63,8 +63,11 @@ func GetAllTask() gin.HandlerFunc {
 		}
 
 		cur.Close(context.Background())
-		w := json.NewEncoder(c.Writer).Encode(results)
-		c.JSON(http.StatusOK, w)
+		werr := json.NewEncoder(c.Writer).Encode(results)
+		if werr != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+		}
+		c.JSON(http.StatusOK, "?"+username)
 
 	}
 
