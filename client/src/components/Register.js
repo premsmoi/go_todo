@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import {
   Button,
   Form,
@@ -17,6 +17,7 @@ function Register() {
   // set state variables
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [invalidUsername, setInvalidUsername] = useState(false)
   // Functions
   function onChangeHandlerUsername(event) {
     setUsername(event.target.value);
@@ -38,12 +39,11 @@ function Register() {
       .then(
         function (response) {
           console.log(response);
-          console.log(
-            "Successfully Register"
-          );
-          window.location.href = "/loginform"
+          console.log("Successfully Register");
+          window.location.href = "/loginform";
         },
         (error) => {
+          setInvalidUsername(true)
           console.log(error);
         }
       );
@@ -58,7 +58,7 @@ function Register() {
       >
         <Grid.Column style={{ maxWidth: 450 }}>
           <Header as="h2" color="teal" textAlign="center">
-            <Image src="/logo.png" /> Register your account
+            <Image src="https://banner2.cleanpng.com/20180425/pxe/kisspng-colored-pencil-clip-art-5ae0902950fb02.3622818715246664093317.jpg" /> Register your account
           </Header>
           <Form size="large">
             <Segment stacked>
@@ -66,17 +66,22 @@ function Register() {
                 fluid
                 icon="user"
                 iconPosition="left"
-                placeholder="E-mail address"
+                placeholder="Create your username here..."
                 onChange={onChangeHandlerUsername}
               />
               <Form.Input
                 fluid
                 icon="lock"
                 iconPosition="left"
-                placeholder="Password"
+                placeholder="Create your password here..."
                 type="password"
                 onChange={onChangeHandlerPassword}
               />
+              <div>
+                {invalidUsername && (
+                  <p style={{ color: "red" }}>the username already being used</p>
+                )}
+              </div>
 
               <Button color="teal" fluid size="large" onClick={submitReigister}>
                 Register

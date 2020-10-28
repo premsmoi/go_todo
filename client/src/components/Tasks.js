@@ -1,6 +1,14 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Card, Header, Form, Input, Icon, Button } from "semantic-ui-react";
+import {
+  Segment,
+  Card,
+  Header,
+  Form,
+  Input,
+  Icon,
+  Button,
+} from "semantic-ui-react";
 import "semantic-ui-css/semantic.min.css";
 let endpoint = "http://127.0.0.1:8080";
 
@@ -212,11 +220,18 @@ function Tasks(props) {
   //render
   return (
     <div>
-      <div className="row">
-        <Header className="header" as="h2">
-          Hi {username}, want you want to do next?
-        </Header>
-      </div>
+      <Segment inverted basic = {true}>
+        <div className="row">
+          <Header className="header" as="h2" color = {"teal"}>
+            Hi {username},
+          </Header>
+          <Header className="header" as="p" color = {"teal"}>
+            Create some tasks ?
+          </Header>
+          
+        </div>
+      
+
       <div className="row">
         <Form>
           <Input
@@ -227,11 +242,12 @@ function Tasks(props) {
             fluid
             placeholder="Create Task"
           />
-          <Button onClick={createTask}>Create Task</Button>
+          <Button color="teal" basic = {true} inverted onClick={createTask}>Create Task</Button>
         </Form>
       </div>
+      </Segment>
       <div className="row">
-        <Card.Group>{item}</Card.Group>
+        <Card.Group itemsPerRow={3}>{item}</Card.Group>
       </div>
       <div>
         <Button onClick={logOut}>Log out</Button>

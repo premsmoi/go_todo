@@ -11,7 +11,7 @@ import {
   Message,
   Segment,
 } from "semantic-ui-react";
-import 'semantic-ui-css/semantic.min.css'
+import "semantic-ui-css/semantic.min.css";
 let endpoint = "http://127.0.0.1:8080";
 
 function LoginForm() {
@@ -47,8 +47,8 @@ function LoginForm() {
       .then(
         function (response) {
           setLogin(true);
-          setWrongPassActivated(false)
-          window.location.href = "/task"
+          setWrongPassActivated(false);
+          window.location.href = "/task";
         },
         (error) => {
           setWrongPassActivated(true);
@@ -66,7 +66,8 @@ function LoginForm() {
       >
         <Grid.Column style={{ maxWidth: 450 }}>
           <Header as="h2" color="teal" textAlign="center">
-            <Image src="/logo.png" /> Login to see your todo list
+            <Image src="https://www.pinclipart.com/picdir/middle/4-49680_post-it-clipart-small-cartoon-post-it-note.png" />{" "}
+            Login to see your todo list
           </Header>
           <Form size="large">
             <Segment stacked>
@@ -74,7 +75,7 @@ function LoginForm() {
                 fluid
                 icon="user"
                 iconPosition="left"
-                placeholder="E-mail address"
+                placeholder="Userame"
                 onChange={onChangeHandlerUsername}
               />
               <Form.Input
@@ -109,8 +110,19 @@ function LoginForm() {
               Register
             </Link>
           </Message>
+          <Message size = {"mini"} color = {"teal"}>
+            
+          <Message size = {"small"} color = {"green"}>
+              This is a small Todo-app project made with Go, React and MongoDB. Source code of this project is on <a href = "https://github.com/Generalkhun/go_todo">Github</a> :)
+          </Message>
+          <Image size = {"mini"} floated = {"center"} src = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Go_Logo_Blue.svg/1200px-Go_Logo_Blue.svg.png"/>{" "}
+          <Image size = {"mini"} src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/220px-React-icon.svg.png"/>
+          <Image size = {"mini"} src = "https://assets.stickpng.com/thumbs/58481021cef1014c0b5e494b.png"/>{" "}
+         
+                    </Message>
         </Grid.Column>
       </Grid>
+      
       <Switch>
         <Route path="/register">
           <Register />
