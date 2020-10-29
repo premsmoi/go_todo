@@ -10,4 +10,4 @@ Use Go with Gin (great web framework built on Golang:https://github.com/gin-goni
 
 ## client 
 Use react to connect API from server and display user's todolist data. 
-After login, User can interact with their todolist including: Add a todo item, toggle a todo item as finished (or unfinished), Delete a todo item and Delete whole todolist 
+After created an account and login, User can interact with their todolist including: Add a todo item, toggle a todo item as finished (or unfinished), Delete a todo item and Delete whole todolist 
