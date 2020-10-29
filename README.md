@@ -1,7 +1,10 @@
 # Goreact todoapp
 Toy Todo app using Go, mongoDB where a logged in user can access their todo list and use simple react app to display user interface
+### Login page
 ![alt text](https://github.com/Generalkhun/go_todo/blob/master/loginPage.png?raw=true)
+### Registeration page
 ![alt text](https://github.com/Generalkhun/go_todo/blob/master/registerPage.png?raw=true)
+### Tasks page
 ![alt text](https://github.com/Generalkhun/go_todo/blob/master/tasksPage.png?raw=true)
 
 ## server
