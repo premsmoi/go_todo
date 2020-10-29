@@ -1,6 +1,6 @@
 # Goreact todoapp
 Toy Todo app using Go, mongoDB where a logged in user can access their todo list and use simple react app to display user interface
-!firstpage(https://github.com/Generalkhun/go_todo/blob/master/loginPage.jpg?raw=true)
+https://github.com/Generalkhun/go_todo/blob/master/loginPage.png?raw=true
 
 ## server
 Use Go with Gin (great web framework built on Golang:https://github.com/gin-gonic/gin) to be serverside. After recieved requests from client, server will perform tasks 
